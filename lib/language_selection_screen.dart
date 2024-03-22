@@ -1,18 +1,17 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localization/l10n/l10n.dart';
 import 'package:flutter_localization/provider/locale_provider.dart';
 import 'package:flutter_localization/splash_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({Key? key}) : super(key: key);
 
   @override
-  State<LanguageSelectionScreen> createState() => _LanguageSelectionScreenState();
+  State<LanguageSelectionScreen> createState() =>
+      _LanguageSelectionScreenState();
 }
 
 class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
@@ -89,14 +88,24 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                           selectedLocale = locale;
                         });
                         localeProvider.setLocale(locale);
-                        Future.delayed(const Duration(seconds: 2), () {
-                          EasyLoading.dismiss();
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SplashScreen()), (route) => false);
-                        });
+                        Future.delayed(
+                          const Duration(seconds: 1),
+                          () {
+                            EasyLoading.dismiss();
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SplashScreen(),
+                                ),
+                                (route) => false);
+                          },
+                        );
                       },
                       child: Card(
                         elevation: 3.0,
-                        color: locale == selectedLocale ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onPrimary,
+                        color: locale == selectedLocale
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onPrimary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16.0),
                         ),
@@ -105,7 +114,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                             languageName(locale)!,
                             style: TextStyle(
                               fontSize: 24.0,
-                              color: locale == selectedLocale ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
+                              color: locale == selectedLocale
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ),

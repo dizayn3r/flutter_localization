@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_localization/homePage.dart';
+import 'package:flutter_localization/home_page.dart';
 import 'package:flutter_localization/language_selection_screen.dart';
 import 'package:flutter_localization/provider/locale_provider.dart';
 import 'package:provider/provider.dart';
@@ -22,11 +21,13 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     getStatus();
     Timer(
-      const Duration(seconds: 3),
+      const Duration(seconds: 1),
       () => Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => locale?.languageCode == 'xx' ? const LanguageSelectionScreen() : const HomeScreen(),
+          builder: (context) => locale?.languageCode == 'xx'
+              ? const LanguageSelectionScreen()
+              : const HomeScreen(),
         ),
       ),
     );
@@ -46,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         color: Colors.white,
         alignment: Alignment.center,
-        child: FlutterLogo(size: MediaQuery.of(context).size.height / 2),
+        child: FlutterLogo(size: MediaQuery.of(context).size.width / 2),
       ),
     );
   }

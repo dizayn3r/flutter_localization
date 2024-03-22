@@ -1,19 +1,18 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocaleProvider extends ChangeNotifier{
-  Locale _locale = Locale('xx');
+class LocaleProvider extends ChangeNotifier {
+  Locale _locale = const Locale('xx');
   Locale get locale => _locale;
 
   initLocale() async {
     log("In LocaleProvider | initLocale");
     SharedPreferences instance = await SharedPreferences.getInstance();
     bool status = instance.containsKey("locale");
-    if(status){
+    if (status) {
       String languageCode = instance.getString("locale")!;
       _locale = Locale(languageCode);
     }

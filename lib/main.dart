@@ -1,15 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_localization/homePage.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localization/provider/locale_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'l10n/l10n.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'l10n/l10n.dart';
 import 'provider/number_provider.dart';
 import 'splash_screen.dart';
 
@@ -24,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context)=> NumberProvider()),
+        ChangeNotifierProvider(create: (context) => NumberProvider()),
         ChangeNotifierProvider(
           create: (context) => LocaleProvider(),
           builder: (context, child) {
