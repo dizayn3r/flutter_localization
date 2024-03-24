@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Text(
               AppLocalizations.of(context)!.helloWorld,
               style: const TextStyle(
-                fontSize: 60,
+                fontSize: 40,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     "${provider.index}",
                     style: const TextStyle(
-                      fontSize: 60,
+                      fontSize: 40,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

@@ -1,37 +1,37 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_localization/l10n/l10n.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocaleProvider extends ChangeNotifier {
-  Locale _locale = const Locale('xx');
-  Locale get locale => _locale;
+import '../constants/locale_constants.dart';
 
-  initLocale() async {
-    log("In LocaleProvider | initLocale");
-    SharedPreferences instance = await SharedPreferences.getInstance();
-    bool status = instance.containsKey("locale");
-    if (status) {
-      String languageCode = instance.getString("locale")!;
-      _locale = Locale(languageCode);
-    }
-    log("Out LocaleProvider | initLocale | Locale: $_locale");
-    return status;
-  }
+Locale? _appLocale;
+Locale? get appLocale => _appLocale;
 
-  void setLocale(Locale locale) async {
-    log("In LocaleProvider | setLocale | Locale: $locale");
-    SharedPreferences instance = await SharedPreferences.getInstance();
-    if (!L10n.all.contains(locale)) return;
-    _locale = locale;
-    instance.setString("locale", locale.languageCode);
-    log("Out LocaleProvider | setLocale | Locale: $locale");
-    notifyListeners();
-  }
+Future<Locale> setLocale(String languageCode) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString(langCode, languageCode);
+  return _locale(languageCode);
+}
 
-  void resetLocale() {
-    _locale = const Locale('en');
-    notifyListeners();
+Future<Locale> getLocale() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String languageCode = prefs.getString(langCode) ?? english;
+  return _locale(languageCode);
+}
+
+Locale _locale(String languageCode) {
+  switch (languageCode) {
+    case english:
+      return const Locale(english, '');
+    case hindi:
+      return const Locale(hindi, "");
+    case spanish:
+      return const Locale(spanish, "");
+    default:
+      return const Locale(english, '');
   }
+}
+
+AppLocalizations translation(BuildContext context) {
+  return AppLocalizations.of(context)!;
 }

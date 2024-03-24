@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localization/l10n/l10n.dart';
-import 'package:flutter_localization/provider/locale_provider.dart';
-import 'package:flutter_localization/splash_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_localization/constants/locale_constants.dart';
+import 'package:flutter_localization/main.dart';
+import 'package:flutter_localization/utils/navigation.dart';
+
+import 'provider/locale_provider.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({Key? key}) : super(key: key);
@@ -19,115 +18,70 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
 
   @override
   void initState() {
-    selectedLocale = Provider.of<LocaleProvider>(context, listen: false).locale;
+    _getLocale();
     super.initState();
+  }
+
+  _getLocale() async {
+    Locale locale = await getLocale();
+    setState(() {
+      selectedLocale = locale;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
-    languageName(Locale locale) {
-      switch (locale.languageCode) {
-        case 'en':
-          return "English";
-        case 'hi':
-          return "Hindi";
-        case 'ar':
-          return "Arabic";
-        default:
-          return null;
-      }
-    }
-
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: kToolbarHeight),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.settingTitle,
-                  style: TextStyle(
-                    fontSize: 60.0,
-                    color: Colors.grey.shade900,
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(translation(context).settingTitle),
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: languageList.length,
+        itemBuilder: (context, index) {
+          Language language = languageList[index];
+          return InkWell(
+            onTap: () async {
+              Locale _locale = await setLocale(language.languageCode);
+              setState(() {
+                selectedLocale = _locale;
+              });
+              MyApp.setLocale(context, _locale);
+              Navigation.splash(context);
+            },
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0.0,
+                  horizontal: 8.0,
+                ),
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(4.0),
+                  child: Image.asset(
+                    "assets/flags/${language.countryCode}.png",
+                    width: 60,
+                    height: 40,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(height: kToolbarHeight / 2),
-                Text(
-                  AppLocalizations.of(context)!.settingSubtitle,
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    color: Colors.grey.shade900,
+                title: Text(language.name),
+                trailing: Visibility(
+                  visible:
+                      selectedLocale?.languageCode == language.languageCode,
+                  child: Icon(
+                    Icons.check_circle_outline_rounded,
+                    color: Theme.of(context).primaryColor,
                   ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(16.0),
-              color: Colors.grey.shade50,
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16.0,
-                crossAxisSpacing: 16.0,
-                childAspectRatio: 1.5,
-                children: List.generate(
-                  L10n.all.length,
-                  (index) {
-                    Locale locale = L10n.all[index];
-                    return GestureDetector(
-                      onTap: () {
-                        EasyLoading.show();
-                        setState(() {
-                          selectedLocale = locale;
-                        });
-                        localeProvider.setLocale(locale);
-                        Future.delayed(
-                          const Duration(seconds: 1),
-                          () {
-                            EasyLoading.dismiss();
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SplashScreen(),
-                                ),
-                                (route) => false);
-                          },
-                        );
-                      },
-                      child: Card(
-                        elevation: 3.0,
-                        color: locale == selectedLocale
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.onPrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            languageName(locale)!,
-                            style: TextStyle(
-                              fontSize: 24.0,
-                              color: locale == selectedLocale
-                                  ? Theme.of(context).colorScheme.onPrimary
-                                  : Theme.of(context).colorScheme.onSurface,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
                 ),
               ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
